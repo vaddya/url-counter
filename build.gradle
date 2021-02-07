@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    compile group: 'ru.odnoklassniki', name: 'one-nio', version: '1.0.2'
+    compile group: 'com.google.guava', name: 'guava', version: '27.0.1-jre'
+    compile group: 'org.jetbrains', name: 'annotations', version: '16.0.1'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+    compile group: 'com.fasterxml', name: 'jackson-module-json-org', version: '0.9.1'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    testImplementation group: 'org.junit.jupiter', name:'junit-jupiter-api', version:'5.7.1'
+    testRuntimeOnly group:'org.junit.jupiter', name:'junit-jupiter-engine', version:'5.7.1'
+}
