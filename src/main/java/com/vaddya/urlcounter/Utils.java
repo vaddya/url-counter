@@ -30,6 +30,7 @@ public final class Utils {
         }
     }
 
+    @NotNull
     public static <T> CompletableFuture<List<T>> join(@NotNull final List<CompletableFuture<T>> futures) {
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0]))
                 .thenApply(v -> futures.stream()

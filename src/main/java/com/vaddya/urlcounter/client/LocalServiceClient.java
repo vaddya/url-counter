@@ -6,14 +6,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import com.vaddya.urlcounter.local.UrlCounter;
+import com.vaddya.urlcounter.local.HitCounter;
 import org.jetbrains.annotations.NotNull;
 
 public final class LocalServiceClient implements ServiceClient {
-    private final UrlCounter counter;
+    private final HitCounter counter;
     private final Executor executor;
 
-    public LocalServiceClient(@NotNull final UrlCounter counter) {
+    public LocalServiceClient(@NotNull final HitCounter counter) {
         this.counter = counter;
         this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     }

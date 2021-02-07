@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import com.vaddya.urlcounter.Endpoints;
+import com.vaddya.urlcounter.HitCounterServer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +37,7 @@ public final class RemoteServiceClient implements ServiceClient {
     @NotNull
     public CompletableFuture<Void> addAsync(@NotNull final String domain) {
         final HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(baseUrl + "/" + Endpoints.ADD + "/" + domain))
+                .uri(URI.create(baseUrl + "/" + HitCounterServer.ADD + "/" + domain))
                 .timeout(TIMEOUT)
                 .build();
         return client.sendAsync(request, HttpResponse.BodyHandlers.discarding())
@@ -48,7 +48,7 @@ public final class RemoteServiceClient implements ServiceClient {
     @NotNull
     public CompletableFuture<List<String>> topAsync(int n) {
         final HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(baseUrl + "/" + Endpoints.TOP + "/" + n))
+                .uri(URI.create(baseUrl + "/" + HitCounterServer.TOP + "/" + n))
                 .timeout(TIMEOUT)
                 .build();
         return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
@@ -60,7 +60,7 @@ public final class RemoteServiceClient implements ServiceClient {
     @NotNull
     public CompletableFuture<Map<String, Integer>> topCountAsync(final int n) {
         final HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(baseUrl + "/" + Endpoints.COUNTS + "/" + n))
+                .uri(URI.create(baseUrl + "/" + HitCounterServer.COUNTS + "/" + n))
                 .timeout(TIMEOUT)
                 .build();
         return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())

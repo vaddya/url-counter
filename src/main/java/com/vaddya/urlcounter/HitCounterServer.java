@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import com.vaddya.urlcounter.client.LocalServiceClient;
 import com.vaddya.urlcounter.client.RemoteServiceClient;
 import com.vaddya.urlcounter.client.ServiceClient;
-import com.vaddya.urlcounter.local.UrlCounter;
+import com.vaddya.urlcounter.local.HitCounter;
 import com.vaddya.urlcounter.topology.Topology;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
@@ -23,19 +23,23 @@ import one.nio.http.HttpServerConfig;
 import one.nio.http.HttpSession;
 import one.nio.http.Request;
 import one.nio.http.Response;
+import one.nio.server.AcceptorConfig;
 
-public final class UrlCounterServer extends HttpServer {
-    private static final Logger log = LoggerFactory.getLogger(UrlCounterServer.class);
+public final class HitCounterServer extends HttpServer {
+    private static final Logger log = LoggerFactory.getLogger(HitCounterServer.class);
+    public static final String ADD = "add";
+    public static final String TOP = "top";
+    public static final String COUNTS = "counts";
 
     private final Topology topology;
     private final Map<String, ServiceClient> clients = new HashMap<>();
     private final ObjectMapper json = new ObjectMapper();
 
-    public UrlCounterServer(
-            @NotNull final HttpServerConfig config,
+    public HitCounterServer(
+            final int port,
             @NotNull final Topology topology,
-            @NotNull final UrlCounter counter) throws IOException {
-        super(config);
+            @NotNull final HitCounter counter) throws IOException {
+        super(config(port));
         this.topology = topology;
         for (String node : topology.all()) {
             if (node.equals(topology.me())) {
@@ -56,13 +60,16 @@ public final class UrlCounterServer extends HttpServer {
             return;
         }
         switch (path[1]) {
-            case Endpoints.ADD:
+            case ADD:
+                // add hit /add/some.domain.com/ignore?withOptionalParams=true
                 handleAdd(session, path[2]);
                 break;
-            case Endpoints.TOP:
+            case TOP:
+                // get top N domains /counts/N
                 handleTop(session, path[2]);
                 break;
-            case Endpoints.COUNTS:
+            case COUNTS:
+                // get top N domains with counters /counts/N
                 handleCounts(session, path[2]);
                 break;
             default:
@@ -155,5 +162,13 @@ public final class UrlCounterServer extends HttpServer {
             log.error("Cannot serialize", e);
             return null;
         }
+    }
+
+    private static HttpServerConfig config(int port) {
+        final AcceptorConfig acceptor = new AcceptorConfig();
+        acceptor.port = port;
+        final HttpServerConfig config = new HttpServerConfig();
+        config.acceptors = new AcceptorConfig[]{acceptor};
+        return config;
     }
 }

@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * In-memory URL hit counter implementation based on the two-level collection.
+ * In-memory hit counter implementation based on the two-level collection.
  * 
  * Operations add(String) & top(int) are O(1), though require some interaction with memory (due to references),
  * and lock protection (due to usage of non trade-safe linked list).
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
  * and then we will go down one level to the counter=2 to get the forth domain.
  * New domain nodes are created in the bottom list (with counter 1).
  */
-public class InMemoryUrlCounter implements UrlCounter {
+public class InMemoryHitCounter implements HitCounter {
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock readLock = lock.readLock();
     private final Lock writeLock = lock.writeLock();
@@ -38,7 +38,7 @@ public class InMemoryUrlCounter implements UrlCounter {
     private CounterNode top;
     private final CounterNode bot;
 
-    public InMemoryUrlCounter() {
+    public InMemoryHitCounter() {
         this.domains = new HashMap<>();
         this.bot = new CounterNode(1);
         this.top = bot;
@@ -49,10 +49,10 @@ public class InMemoryUrlCounter implements UrlCounter {
         writeLock.lock();
         try {
             if (domains.containsKey(domain)) {
-                DomainNode node = domains.get(domain);
+                final DomainNode node = domains.get(domain);
                 increment(node);
             } else {
-                DomainNode node = new DomainNode(domain);
+                final DomainNode node = new DomainNode(domain);
                 domains.put(domain, node);
                 node.next = bot.domains;
                 node.counter = bot;
@@ -71,7 +71,7 @@ public class InMemoryUrlCounter implements UrlCounter {
     public List<String> top(final int n) {
         readLock.lock();
         try {
-            List<String> result = new ArrayList<>();
+            final List<String> result = new ArrayList<>();
             DomainNode curr = top.domains;
             while (result.size() < n && curr != null) {
                 result.add(curr.domain);
@@ -94,7 +94,7 @@ public class InMemoryUrlCounter implements UrlCounter {
     public Map<String, Integer> topCount(int n) {
         readLock.lock();
         try {
-            Map<String, Integer> result = new LinkedHashMap<>();
+            final Map<String, Integer> result = new LinkedHashMap<>();
             DomainNode curr = top.domains;
             while (result.size() < n && curr != null) {
                 result.put(curr.domain, curr.counter.count);
@@ -116,7 +116,7 @@ public class InMemoryUrlCounter implements UrlCounter {
      * Should be called only under write lock!
      */
     private void increment(@NotNull final DomainNode node) {
-        CounterNode counter = node.counter;
+        final CounterNode counter = node.counter;
         // remove node from counter domain list
         if (node.next != null) {
             node.next.prev = node.prev;
@@ -163,7 +163,7 @@ public class InMemoryUrlCounter implements UrlCounter {
                 counter.next.domains = node;
             } else {
                 // insert count node
-                CounterNode newCounter = new CounterNode(counter.count + 1);
+                final CounterNode newCounter = new CounterNode(counter.count + 1);
                 node.counter = newCounter;
                 newCounter.next = counter.next;
                 newCounter.prev = counter;

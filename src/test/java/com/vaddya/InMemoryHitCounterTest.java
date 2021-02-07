@@ -3,16 +3,16 @@ package com.vaddya;
 import java.util.List;
 import java.util.Map;
 
-import com.vaddya.urlcounter.local.InMemoryUrlCounter;
-import com.vaddya.urlcounter.local.UrlCounter;
+import com.vaddya.urlcounter.local.InMemoryHitCounter;
+import com.vaddya.urlcounter.local.HitCounter;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class InMemoryUrlCounterTest {
+class InMemoryHitCounterTest {
     @Test
     void test() {
-        UrlCounter service = new InMemoryUrlCounter();
+        HitCounter service = new InMemoryHitCounter();
         service.add("yandex.ru");
         service.add("yandex.ru");
         service.add("yandex.ru");
