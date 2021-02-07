@@ -20,8 +20,8 @@ public final class Utils {
             String domain = uri.getHost();
             domain = domain.startsWith("www.") ? domain.substring(4) : domain;
             final String[] parts = domain.split("\\.");
-            if (parts.length <= 2) {
-                return domain;
+            if (parts.length < 2) {
+                return null;
             } else {
                 return parts[parts.length - 2] + "." + parts[parts.length - 1];
             }

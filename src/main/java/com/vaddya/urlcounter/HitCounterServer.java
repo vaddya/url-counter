@@ -65,7 +65,7 @@ public final class HitCounterServer extends HttpServer {
                 handleAdd(session, path[2]);
                 break;
             case TOP:
-                // get top N domains /counts/N
+                // get top N domains /top/N
                 handleTop(session, path[2]);
                 break;
             case COUNTS:

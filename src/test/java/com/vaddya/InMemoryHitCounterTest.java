@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InMemoryHitCounterTest {
     @Test
-    void test() {
+    void testHits() {
         HitCounter service = new InMemoryHitCounter();
         service.add("yandex.ru");
         service.add("yandex.ru");
