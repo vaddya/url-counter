@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * In-memory hit counter implementation based on the two-level collection.
  * 
- * Operations add(String) & top(int) are O(1), though require some interaction with memory (due to references),
+ * All operations are O(1), though require some interaction with memory (due to references),
  * and lock protection (due to usage of non trade-safe linked list).
  *
  * top -> 5 -> google.com <-> mail.ru <-> twitter.com
