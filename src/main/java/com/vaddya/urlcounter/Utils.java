@@ -16,16 +16,16 @@ public final class Utils {
     @Nullable
     public static String extractDomain(@NotNull final String url) {
         try {
-            URI uri = new URI("http://" + url);
+            final URI uri = new URI("http://" + url);
             String domain = uri.getHost();
             domain = domain.startsWith("www.") ? domain.substring(4) : domain;
-            String[] parts = domain.split("\\.");
+            final String[] parts = domain.split("\\.");
             if (parts.length <= 2) {
                 return domain;
             } else {
                 return parts[parts.length - 2] + "." + parts[parts.length - 1];
             }
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             return null;
         }
     }

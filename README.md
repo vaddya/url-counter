@@ -1,1 +1,1 @@
-# url-counter
+# HTTP server to count URL hits

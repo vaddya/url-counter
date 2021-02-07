@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.vaddya.urlcounter.local.InMemoryUrlCounter;
 import com.vaddya.urlcounter.local.UrlCounter;
+import com.vaddya.urlcounter.topology.ConsistentHashingTopology;
 import com.vaddya.urlcounter.topology.Topology;
 
 import one.nio.http.HttpServer;
@@ -23,7 +24,7 @@ public class Server {
 
         // Start nodes
         for (int port : PORTS) {
-            Topology nodes = Topology.consistentHashing(topology, "http://localhost:" + port);
+            Topology nodes = new ConsistentHashingTopology(topology, "http://localhost:" + port);
             AcceptorConfig acceptor = new AcceptorConfig();
             acceptor.port = port;
             HttpServerConfig config = new HttpServerConfig();

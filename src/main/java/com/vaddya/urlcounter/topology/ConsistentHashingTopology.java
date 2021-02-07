@@ -14,7 +14,7 @@ import com.google.common.hash.Hashing;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("UnstableApiUsage")
-final class ConsistentHashingTopology implements Topology {
+public final class ConsistentHashingTopology implements Topology {
     private static final int VNODE_COUNT = 100;
 
     private final String me;
@@ -23,7 +23,7 @@ final class ConsistentHashingTopology implements Topology {
     private final StampedLock lock = new StampedLock();
     private final HashFunction hashFunction = Hashing.murmur3_128(42);
 
-    ConsistentHashingTopology(
+    public ConsistentHashingTopology(
             @NotNull final Set<String> nodes,
             @NotNull final String me) {
         if (nodes.isEmpty()) {

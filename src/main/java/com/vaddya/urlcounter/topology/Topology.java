@@ -7,13 +7,6 @@ import org.jetbrains.annotations.NotNull;
 public interface Topology {
 
     @NotNull
-    static Topology consistentHashing(
-            @NotNull final Set<String> topology,
-            @NotNull final String me) {
-        return new ConsistentHashingTopology(topology, me);
-    }
-
-    @NotNull
     Set<String> all();
 
     @NotNull

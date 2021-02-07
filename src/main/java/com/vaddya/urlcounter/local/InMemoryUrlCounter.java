@@ -12,10 +12,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * In memory URL counter implementation based on two-level collection.
+ * In-memory URL hit counter implementation based on the two-level collection.
  * 
  * Operations add(String) & top(int) are O(1), though require some interaction with memory (due to references),
- * and lock protection (due to usage of non trade-safe collections).
+ * and lock protection (due to usage of non trade-safe linked list).
  *
  * top -> 5 -> google.com <-> mail.ru <-> twitter.com
  *        |
@@ -90,6 +90,7 @@ public class InMemoryUrlCounter implements UrlCounter {
     }
 
     @Override
+    @NotNull
     public Map<String, Integer> topCount(int n) {
         readLock.lock();
         try {

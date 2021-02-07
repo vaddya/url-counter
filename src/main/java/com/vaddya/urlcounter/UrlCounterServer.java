@@ -24,11 +24,11 @@ import one.nio.http.HttpSession;
 import one.nio.http.Request;
 import one.nio.http.Response;
 
-public class UrlCounterServer extends HttpServer {
+public final class UrlCounterServer extends HttpServer {
     private static final Logger log = LoggerFactory.getLogger(UrlCounterServer.class);
 
     private final Topology topology;
-    private final Map<String, ServiceClient> clients;
+    private final Map<String, ServiceClient> clients = new HashMap<>();
     private final ObjectMapper json = new ObjectMapper();
 
     public UrlCounterServer(
@@ -37,12 +37,11 @@ public class UrlCounterServer extends HttpServer {
             @NotNull final UrlCounter counter) throws IOException {
         super(config);
         this.topology = topology;
-        this.clients = new HashMap<>();
         for (String node : topology.all()) {
             if (node.equals(topology.me())) {
                 clients.put(node, new LocalServiceClient(counter));
             } else {
-                clients.put(node, new RemoteServiceClient(node));
+                clients.put(node, new RemoteServiceClient(node, json));
             }
         }
     }
@@ -57,17 +56,17 @@ public class UrlCounterServer extends HttpServer {
             return;
         }
         switch (path[1]) {
-            case Paths.ADD:
+            case Endpoints.ADD:
                 handleAdd(session, path[2]);
                 break;
-            case Paths.TOP:
+            case Endpoints.TOP:
                 handleTop(session, path[2]);
                 break;
-            case Paths.COUNTS:
+            case Endpoints.COUNTS:
                 handleCounts(session, path[2]);
                 break;
             default:
-                session.sendError(Response.METHOD_NOT_ALLOWED, "");
+                session.sendError(Response.BAD_REQUEST, "Bad request");
         }
     }
 
@@ -86,7 +85,6 @@ public class UrlCounterServer extends HttpServer {
                 .thenApply(x -> new Response(Response.OK, Response.EMPTY))
                 .thenAccept(response -> sendResponse(session, response));
     }
-
 
     private void handleTop(
             @NotNull final HttpSession session,
@@ -125,6 +123,7 @@ public class UrlCounterServer extends HttpServer {
                 .thenAccept(response -> sendResponse(session, response));
     }
 
+    @NotNull
     private Response mergeResults(
             @NotNull final List<Map<String, Integer>> results,
             final int n) {
@@ -148,6 +147,7 @@ public class UrlCounterServer extends HttpServer {
         }
     }
 
+    @NotNull
     private byte[] serialize(@NotNull final Object object) {
         try {
             return json.writeValueAsBytes(object);

@@ -1,6 +1,7 @@
 package com.vaddya;
 
 import java.util.List;
+import java.util.Map;
 
 import com.vaddya.urlcounter.local.InMemoryUrlCounter;
 import com.vaddya.urlcounter.local.UrlCounter;
@@ -19,6 +20,7 @@ class InMemoryUrlCounterTest {
         service.add("google.com");
         service.add("mail.ru");
         assertEquals(List.of("yandex.ru", "mail.ru"), service.top(2)); // y3, m2
+        assertEquals(Map.of("yandex.ru", 3, "mail.ru", 2), service.topCount(2)); // y3, m2
         service.add("yandex.ru");
         service.add("google.com");
         service.add("google.com");
