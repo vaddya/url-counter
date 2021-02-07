@@ -65,7 +65,7 @@ public final class RemoteServiceClient implements ServiceClient {
                 .build();
         return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body)
-                .thenApply(this::parseKeyValue);
+                .thenApply(this::parseMap);
     }
 
     @NotNull
@@ -79,11 +79,11 @@ public final class RemoteServiceClient implements ServiceClient {
     }
 
     @NotNull
-    private Map<String, Integer> parseKeyValue(@NotNull final String value) {
+    private Map<String, Integer> parseMap(@NotNull final String value) {
         try {
             return json.readValue(value, TypeFactory.mapType(Map.class, String.class, Integer.class));
         } catch (IOException e) {
-            log.error("Cannot parse key-values: " + value, e);
+            log.error("Cannot parse map: " + value, e);
             return Collections.emptyMap();
         }
     }

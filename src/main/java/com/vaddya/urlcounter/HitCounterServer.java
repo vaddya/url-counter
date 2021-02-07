@@ -15,6 +15,7 @@ import com.vaddya.urlcounter.local.HitCounter;
 import com.vaddya.urlcounter.topology.Topology;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -141,7 +142,11 @@ public final class HitCounterServer extends HttpServer {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
         final byte[] body = serialize(result);
-        return Response.ok(body);
+        if (body != null) {
+            return Response.ok(body);
+        } else {
+            return new Response(Response.INTERNAL_ERROR, Response.EMPTY);
+        }
     }
 
     private void sendResponse(
@@ -154,7 +159,7 @@ public final class HitCounterServer extends HttpServer {
         }
     }
 
-    @NotNull
+    @Nullable
     private byte[] serialize(@NotNull final Object object) {
         try {
             return json.writeValueAsBytes(object);
