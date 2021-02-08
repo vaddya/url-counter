@@ -25,7 +25,8 @@ public final class LocalServiceClient implements ServiceClient {
     }
 
     @Override
-    public @NotNull CompletableFuture<List<String>> topAsync(int n) {
+    @NotNull
+    public CompletableFuture<List<String>> topAsync(int n) {
         return CompletableFuture.supplyAsync(() -> counter.top(n), executor);
     }
 

@@ -6,7 +6,7 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 
 public interface HitCounter {
-    void add(String domain);
+    void add(@NotNull String domain);
 
     @NotNull
     List<String> top(int n);

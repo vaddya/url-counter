@@ -19,7 +19,7 @@ public final class ConsistentHashingTopology implements Topology {
 
     private final String me;
     private final Set<String> nodes;
-    private final NavigableMap<Long, VirtualNode<String>> ring = new TreeMap<>();
+    private final NavigableMap<Long, VirtualNode> ring = new TreeMap<>();
     private final StampedLock lock = new StampedLock();
     private final HashFunction hashFunction = Hashing.murmur3_128(42);
 
@@ -51,7 +51,7 @@ public final class ConsistentHashingTopology implements Topology {
         final long stamp = lock.readLock();
         try {
             final long hash = hash(key);
-            final Map.Entry<Long, VirtualNode<String>> nodeEntry = ring.ceilingEntry(hash);
+            final Map.Entry<Long, VirtualNode> nodeEntry = ring.ceilingEntry(hash);
             if (nodeEntry == null) {
                 return ring.firstEntry().getValue().node();
             }
@@ -73,7 +73,7 @@ public final class ConsistentHashingTopology implements Topology {
         try {
             nodes.add(node);
             for (int i = 0; i < VNODE_COUNT; i++) {
-                final VirtualNode<String> vnode = new VirtualNode<>(node, i);
+                final VirtualNode vnode = new VirtualNode(node, i);
                 final byte[] vnodeBytes = vnode.name().getBytes(Charsets.UTF_8);
                 final long hash = hashFunction.hashBytes(vnodeBytes).asLong();
                 ring.put(hash, vnode);
@@ -98,7 +98,7 @@ public final class ConsistentHashingTopology implements Topology {
         return hashFunction.hashString(key, Charset.defaultCharset()).asLong();
     }
 
-    private static class VirtualNode<T> {
+    private static class VirtualNode {
         private final String node;
         private final int index;
 
