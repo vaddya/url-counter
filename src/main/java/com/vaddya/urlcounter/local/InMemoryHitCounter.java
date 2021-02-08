@@ -13,21 +13,25 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * In-memory hit counter implementation based on the two-level collection.
- * 
- * All operations are O(1), though require some interaction with memory (due to references),
- * and lock protection (due to usage of non trade-safe linked list).
  *
+ * Adding new hit has O(1) time & space complexity, though require some interaction
+ * with memory (due to references) and lock protection (due to usage of non trade-safe linked list). 
+ *
+ * Retrieving top K domains has O(K) time & space complexity. Reading operations can safely run concurrently.
+ *
+ * An example of internal structure:
  * top -> 5 -> google.com <-> mail.ru <-> twitter.com
  *        |
  *        2 -> yandex.ru <-> yahoo.com
  *        |
  * bot -> 1 -> example.com
  *
- * Vertical doubly-linked list - counter nodes (each node points to the first domain node)
- * Horizontal doubly-linked list - domain nodes (each node points back to the counter node)
- * 
- * In the example, if we need to get top(4) we will traverse all nodes with the counter=5 first,
- * and then we will go down one level to the counter=2 to get the forth domain.
+ * Vertical doubly-linked list - counter nodes (each node points to the first domain node),
+ * horizontal doubly-linked list - domain nodes (each node points back to the counter node).
+ *
+ * In the example, to get top(4) we will traverse all nodes with the counter=5 first,
+ * and then we will go down one level to the counter=2 to get the last required domain.
+ *
  * New domain nodes are created in the bottom list (with counter 1).
  */
 public class InMemoryHitCounter implements HitCounter {
