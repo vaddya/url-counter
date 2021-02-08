@@ -97,7 +97,7 @@ public final class HitCounterServer extends HttpServer {
     private void handleTop(
             @NotNull final HttpSession session,
             @NotNull final String number) throws IOException {
-        int n;
+        final int n;
         try {
             n = Integer.parseInt(number);
         } catch (NumberFormatException e) {
@@ -169,7 +169,8 @@ public final class HitCounterServer extends HttpServer {
         }
     }
 
-    private static HttpServerConfig config(int port) {
+    @NotNull
+    private static HttpServerConfig config(final int port) {
         final AcceptorConfig acceptor = new AcceptorConfig();
         acceptor.port = port;
         final HttpServerConfig config = new HttpServerConfig();
